@@ -20,6 +20,7 @@ class OneSignal:
         """Inits OneSignal with connection details"""
         self.app_id = app_id
         self.rest_api_key = rest_api_key
+        self.session = requests.session()
 
     def request(self, method, endpoint, json={}):
         """Sends a request to the OneSignal API
@@ -36,7 +37,7 @@ class OneSignal:
             OneSignalAPIError: OneSignal API request was not successful
         """
 
-        r = requests.request(
+        r = self.session.request(
             method,
             self.base_api + endpoint,
             json=json,
