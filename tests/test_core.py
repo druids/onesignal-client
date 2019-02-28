@@ -32,8 +32,8 @@ def test_cancel(client):
 def test_details(client):
     notification = onesignal.SegmentNotification(
         contents={"en": "Hello World"},
-        included_segments=onesignal.SegmentNotification.ALL
+        included_segments=onesignal.SegmentNotification.ACTIVE_USERS
     )
-    client.send(notification)
+    notification = client.send(notification)
     details = client.details(notification)
-    assert "is_chrome_web" in details.keys()
+    assert details["failed"] == 0

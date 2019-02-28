@@ -75,7 +75,7 @@ class OneSignal:
 
         notification.id = response["id"]
 
-        return response
+        return notification
 
     def cancel(self, notification):
         """Cancel a notification
