@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 import requests
 
 from .errors import OneSignalAPIError
@@ -37,7 +39,7 @@ class OneSignal:
             OneSignalAPIError: OneSignal API request was not successful
         """
 
-        r = self.session.request(
+        response = self.session.request(
             method,
             self.base_api + endpoint,
             json=json,
@@ -46,10 +48,10 @@ class OneSignal:
             }
         )
 
-        if r.status_code != 200:
-            raise OneSignalAPIError(r.json())
+        if response.status_code != HTTPStatus.OK:
+            raise OneSignalAPIError(response.json())
 
-        return r.json()
+        return response
 
     def send(self, notification):
         """Send a notification
@@ -73,9 +75,7 @@ class OneSignal:
 
         response = self.request("post", "notifications", json=data)
 
-        notification.id = response["id"]
-
-        return notification
+        return response
 
     def cancel(self, notification):
         """Cancel a notification
