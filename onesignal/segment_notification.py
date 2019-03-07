@@ -1,5 +1,6 @@
-from .notification import Notification, common_notification_paramenters
 from itertools import chain
+
+from .notification import Notification, common_notification_paramenters
 
 
 class SegmentNotification(Notification):
@@ -11,10 +12,10 @@ class SegmentNotification(Notification):
         {common_notification_paramenters}
     """.format(common_notification_paramenters=common_notification_paramenters)
 
-    ALL = "All"
-    ACTIVE_USERS = "Active Users"
-    ENGAGED_USERS = "Engaged Users"
-    INACTIVE_USERS = "Inactive Users"
+    ALL = 'All'
+    ACTIVE_USERS = 'Active Users'
+    ENGAGED_USERS = 'Engaged Users'
+    INACTIVE_USERS = 'Inactive Users'
 
     def __init__(self,
                  included_segments=None,
@@ -26,6 +27,6 @@ class SegmentNotification(Notification):
 
     def get_data(self):
         return dict(chain({
-            "included_segments": self.included_segments,
-            "excluded_segments": self.excluded_segments
+            'included_segments': self.included_segments,
+            'excluded_segments': self.excluded_segments
         }.items(), self.get_common_data().items()))
