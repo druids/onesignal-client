@@ -1,9 +1,23 @@
 from http import HTTPStatus
+from json import JSONDecodeError
 
 import requests
 
 from .errors import OneSignalAPIError
 from .utils import merge_dicts
+
+
+class OneSignalCallResult:
+    def __init__(self, response):
+        self.status_code = response.status_code
+        self.is_error = self.status_code != HTTPStatus.OK
+
+        try:
+            json = response.json()
+        except JSONDecodeError:
+            json = {}
+        self.errors = json.get('errors') if self.is_error or 'errors' in json.keys() else None
+        self.body = json
 
 
 class OneSignal:
@@ -73,9 +87,7 @@ class OneSignal:
             app_id_obj
         )
 
-        response = self.request('post', 'notifications', json=data)
-
-        return response
+        return OneSignalCallResult(self.request('post', 'notifications', json=data))
 
     def cancel(self, notification):
         """Cancel a notification
@@ -94,12 +106,12 @@ class OneSignal:
                 raise ValueError('The notification was propably not sent yet')
             notification_id = notification.id
 
-        response = self.request(
-            'delete',
-            'notifications/' + notification_id + '?app_id=' + self.app_id
+        return OneSignalCallResult(
+            self.request(
+                'delete',
+                'notifications/' + notification_id + '?app_id=' + self.app_id
+            )
         )
-
-        return response
 
     def details(self, notification):
         """Get details about a notification
