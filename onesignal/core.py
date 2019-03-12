@@ -80,7 +80,7 @@ class OneSignal:
         if isinstance(self.app_id, str):
             app_id_obj = {'app_id': self.app_id}
         elif isinstance(self.app_id, list):
-            app_id_obj = {'app_ids': self.app_id}
+            app_id_obj = {'app_ids': [self.app_id]}
 
         data = merge_dicts(
             notification.get_data(),
