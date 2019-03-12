@@ -30,7 +30,7 @@ class OneSignal:
         app_id: OneSignal app id
         rest_api_key: secret OneSignal rest api key
     """
-    base_api = 'https://onesignal.com/api/v1/'
+    base_api_url = 'https://onesignal.com/api/v1/'
 
     def __init__(self, app_id, rest_api_key):
         """Inits OneSignal with connection details"""
@@ -55,10 +55,10 @@ class OneSignal:
 
         response = self.session.request(
             method,
-            self.base_api + endpoint,
+            '{api_url}{endpoint}'.format(self.base_api_url, endpoint),
             json=json,
             headers={
-                'Authorization': 'Basic ' + self.rest_api_key
+                'Authorization': 'Basic {key}'.format(key=self.rest_api_key)
             }
         )
 
@@ -109,7 +109,8 @@ class OneSignal:
         return OneSignalCallResult(
             self.request(
                 'delete',
-                'notifications/' + notification_id + '?app_id=' + self.app_id
+                'notifications/{notification_id}?app_id={app_id}'.format(notification_id=notification_id,
+                                                                         app_id=self.app_id)
             )
         )
 
@@ -132,7 +133,8 @@ class OneSignal:
 
         response = self.request(
             'get',
-            'notifications/' + notification_id + '?app_id=' + self.app_id
+            'notifications/{notification_id}?app_id={app_id}'.format(notification_id=notification_id,
+                                                                     app_id=self.app_id)
         )
 
         result = {}
