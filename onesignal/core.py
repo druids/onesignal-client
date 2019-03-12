@@ -15,7 +15,7 @@ class OneSignalCallResult:
         try:
             json = response.json()
         except JSONDecodeError:
-            json = {}
+            json = {'errors': 'Failed to decode JSON in OneSignalClient.'}
         self.errors = json.get('errors') if self.is_error or 'errors' in json.keys() else None
         self.body = json
 
