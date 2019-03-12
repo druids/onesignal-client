@@ -20,7 +20,7 @@ class OneSignalCallResult:
         self.body = json
 
 
-class OneSignal:
+class OneSignalClient:
     """Connects all the functions and methods to the OneSignal API
 
     Central class that is used to interact with the OneSignal API
@@ -55,7 +55,7 @@ class OneSignal:
 
         response = self.session.request(
             method,
-            '{api_url}{endpoint}'.format(self.base_api_url, endpoint),
+            '{api_url}{endpoint}'.format(api_url=self.base_api_url, endpoint=endpoint),
             json=json,
             headers={
                 'Authorization': 'Basic {key}'.format(key=self.rest_api_key)
