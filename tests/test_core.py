@@ -7,7 +7,7 @@ def test_initialize(client):
 
 def test_send(client):
     notification = onesignal.SegmentNotification(
-        contents={"en": "Hello World"},
+        contents={'en': 'Hello World'},
         included_segments=[onesignal.SegmentNotification.ALL]
     )
     assert client.send(notification)
@@ -15,13 +15,13 @@ def test_send(client):
 
 def test_cancel(client):
     notification = onesignal.SegmentNotification(
-        contents={"en": "Hello World"},
+        contents={'en': 'Hello World'},
         included_segments=[onesignal.SegmentNotification.ALL]
     )
 
     try:
         client.cancel(notification)
-        assert False, "Notification was not sent yet, but was on it's way to be canceled"
+        assert False, 'Notification was not sent yet, but was on its way to be canceled'
     except ValueError:
         pass
 
@@ -31,9 +31,9 @@ def test_cancel(client):
 
 def test_details(client):
     notification = onesignal.SegmentNotification(
-        contents={"en": "Hello World"},
-        included_segments=onesignal.SegmentNotification.ALL
+        contents={'en': 'Hello World'},
+        included_segments=onesignal.SegmentNotification.ACTIVE_USERS
     )
-    client.send(notification)
+    notification = client.send(notification)
     details = client.details(notification)
-    assert "is_chrome_web" in details.keys()
+    assert details['failed'] == 0

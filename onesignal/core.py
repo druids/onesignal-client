@@ -1,10 +1,26 @@
+from http import HTTPStatus
+from json import JSONDecodeError
+
 import requests
 
 from .errors import OneSignalAPIError
 from .utils import merge_dicts
 
 
-class OneSignal:
+class OneSignalCallResult:
+    def __init__(self, response):
+        self.status_code = response.status_code
+        self.is_error = self.status_code != HTTPStatus.OK
+
+        try:
+            json = response.json()
+        except JSONDecodeError:
+            json = {'errors': 'Failed to decode JSON in OneSignalClient.'}
+        self.errors = json.get('errors') if self.is_error or 'errors' in json.keys() else None
+        self.body = json
+
+
+class OneSignalClient:
     """Connects all the functions and methods to the OneSignal API
 
     Central class that is used to interact with the OneSignal API
@@ -14,12 +30,13 @@ class OneSignal:
         app_id: OneSignal app id
         rest_api_key: secret OneSignal rest api key
     """
-    base_api = "https://onesignal.com/api/v1/"
+    base_api_url = 'https://onesignal.com/api/v1/'
 
     def __init__(self, app_id, rest_api_key):
         """Inits OneSignal with connection details"""
         self.app_id = app_id
         self.rest_api_key = rest_api_key
+        self.session = requests.session()
 
     def request(self, method, endpoint, json={}):
         """Sends a request to the OneSignal API
@@ -36,19 +53,19 @@ class OneSignal:
             OneSignalAPIError: OneSignal API request was not successful
         """
 
-        r = requests.request(
+        response = self.session.request(
             method,
-            self.base_api + endpoint,
+            '{api_url}{endpoint}'.format(api_url=self.base_api_url, endpoint=endpoint),
             json=json,
             headers={
-                "Authorization": "Basic " + self.rest_api_key
+                'Authorization': 'Basic {key}'.format(key=self.rest_api_key)
             }
         )
 
-        if r.status_code != 200:
-            raise OneSignalAPIError(r.json())
+        if response.status_code != HTTPStatus.OK:
+            raise OneSignalAPIError(response.json())
 
-        return r.json()
+        return response
 
     def send(self, notification):
         """Send a notification
@@ -61,20 +78,16 @@ class OneSignal:
         """
 
         if isinstance(self.app_id, str):
-            app_id_obj = {"app_id": self.app_id}
+            app_id_obj = {'app_id': self.app_id}
         elif isinstance(self.app_id, list):
-            app_id_obj = {"app_ids": self.app_id}
+            app_id_obj = {'app_ids': [self.app_id]}
 
         data = merge_dicts(
             notification.get_data(),
             app_id_obj
         )
 
-        response = self.request("post", "notifications", json=data)
-
-        notification.id = response["id"]
-
-        return response
+        return OneSignalCallResult(self.request('post', 'notifications', json=data))
 
     def cancel(self, notification):
         """Cancel a notification
@@ -90,15 +103,16 @@ class OneSignal:
             notification_id = notification
         else:
             if not notification.id:
-                raise ValueError("The notification was propably not sent yet")
+                raise ValueError('The notification was propably not sent yet')
             notification_id = notification.id
 
-        response = self.request(
-            "delete",
-            "notifications/" + notification_id + "?app_id=" + self.app_id
+        return OneSignalCallResult(
+            self.request(
+                'delete',
+                'notifications/{notification_id}?app_id={app_id}'.format(notification_id=notification_id,
+                                                                         app_id=self.app_id)
+            )
         )
-
-        return response
 
     def details(self, notification):
         """Get details about a notification
@@ -114,12 +128,13 @@ class OneSignal:
             notification_id = notification
         else:
             if not notification.id:
-                raise ValueError("The notification was propably not sent yet")
+                raise ValueError('The notification was propably not sent yet')
             notification_id = notification.id
 
         response = self.request(
-            "get",
-            "notifications/" + notification_id + "?app_id=" + self.app_id
+            'get',
+            'notifications/{notification_id}?app_id={app_id}'.format(notification_id=notification_id,
+                                                                     app_id=self.app_id)
         )
 
         result = {}
@@ -135,10 +150,10 @@ class OneSignal:
             var: name of variable in camelCase
         """
 
-        result = ""
+        result = ''
         for letter in var:
             if letter == letter.lower():
                 result += letter
             else:
-                result += "_" + letter.lower()
+                result += '_' + letter.lower()
         return result
