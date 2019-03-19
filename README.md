@@ -1,22 +1,19 @@
-# OneSignal-Notifications
+# OneSignal client
 
-![](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)
-[![PyPI](https://img.shields.io/pypi/v/onesignal-notifications.svg?style=flat-square&colorB=dfb317)](https://pypi.org/project/onesignal-notifications/)
-[![Docs](https://img.shields.io/badge/docs-VuePress-red.svg?style=flat-square)](https://lanseuo.github.io/onesignal-notifications/)
-[![Travis CI](https://img.shields.io/travis/Lanseuo/onesignal-notifications.svg?style=flat-square)](https://travis-ci.org/Lanseuo/onesignal-notifications)
+OneSignal client is a wrapper for the OneSignal API which allows you to send notifications to Android, iOS and Web App.
 
-OneSignal-Notifications is a wrapper for the OneSignal API which allows you to send notifications to Android, iOS and Web App.
+It is based on ![onesignal-notifications](https://github.com/Lanseuo/onesignal-notifications) library.
 
 ## Installation
 
 ```
-pip install onesignal-notifications
+pip install onesignal-client
 ```
 
 ## Usage
 
 ```python
-from onesignal import OneSignal, SegmentNotification
+from onesignal import OneSignalClient, SegmentNotification
 
 client = OneSignal("MY_APP_ID", "MY_REST_API_KEY")
 notification_to_all_users = SegmentNotification(
