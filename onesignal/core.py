@@ -63,7 +63,10 @@ class OneSignalClient:
         )
 
         if response.status_code != HTTPStatus.OK:
-            raise OneSignalAPIError(response.json())
+            try:
+                raise OneSignalAPIError(response.json())
+            except JSONDecodeError:
+                raise OneSignalAPIError({'errors': 'Status code "{}" returned.'.format(response.status_code)})
 
         return response
 
