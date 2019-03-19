@@ -1,17 +1,27 @@
-from setuptools import setup
+import setuptools
 
-long_description = open("README.md").read()
+with open('README.md', 'r') as f:
+    long_description = f.read()
 
-setup(
-    name="onesignal-notifications",
-    version="0.2.4",
-    url="https://github.com/Lanseuo/onesignal-notifications",
-    description="OneSignal API Wrapper for Python",
+setuptools.setup(
+    name='onesignal-client',
+    version='0.0.1',
+    url='https://github.com/radimsuckr/onesignal-client',
+    description='OneSignal API wrapper',
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    license="MIT",
-    author="Lucas Hild",
-    author_email="contact@lucas-hild.de",
-    packages=["onesignal"],
-    install_requires=["requests"]
+    long_description_content_type='text/markdown',
+    license='MIT',
+    author='Radim Sückr',
+    author_email='contact@radimsuckr.cz',
+    packages=['onesignal'],
+    install_requires=['requests'],
+    classifiers=[
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+    ]
 )
