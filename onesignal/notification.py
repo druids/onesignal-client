@@ -328,13 +328,17 @@ class Notification:
                     variable_string, class_of_variable)
 
     def get_common_data(self):
-        return merge_dicts(
-            self.content_data,
-            self.email_content_data,
-            self.attachments_data,
-            self.action_buttons_data,
-            self.appearance_data,
-            self.delivery_data,
-            self.grouping_and_collapsing_data,
-            self.platform_to_deliver_to_data
-        )
+        return {
+            k: v
+            for k, v in merge_dicts(
+                self.content_data,
+                self.email_content_data,
+                self.attachments_data,
+                self.action_buttons_data,
+                self.appearance_data,
+                self.delivery_data,
+                self.grouping_and_collapsing_data,
+                self.platform_to_deliver_to_data
+            ).items() if v is not None
+        }
+
